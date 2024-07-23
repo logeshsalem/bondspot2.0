@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.application.entity.Feedback;
-import com.application.entity.Message;
 import com.application.service.FeedbackService;
 
 @RestController
@@ -28,10 +26,7 @@ public class FeedbackController {
 		feedbackService = theFeedbackService;
 	}
 	
-//	@GetMapping("/feedback")
-//	public String helloWorld() {
-//		return "hello world!";
-//	}
+
 	
 	@PostMapping("/feedback")
     public Feedback createMatch(@RequestBody Feedback feedback) {

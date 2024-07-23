@@ -2,15 +2,11 @@ package com.application.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import com.application.entity.Feedback;
-import com.application.entity.Message;
 import com.application.entity.User;
 import com.application.repository.FeedbackRepository;
 import com.application.repository.UserRepository;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
