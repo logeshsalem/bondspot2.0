@@ -21,7 +21,8 @@ public class MatchServiceImpl implements MatchService{
 	
 	private EntityManager entityManager;
 	
-	public MatchServiceImpl(MatchRepository theMatchRepository, UserRepository theUserRepository, EntityManager theEntityManager) {
+	public MatchServiceImpl(MatchRepository theMatchRepository, UserRepository theUserRepository, 
+			EntityManager theEntityManager) {
 		matchRepository = theMatchRepository;
 		userRepository = theUserRepository;
 		entityManager = theEntityManager;
@@ -58,7 +59,8 @@ public class MatchServiceImpl implements MatchService{
 		}
 		
 		
-		 System.out.println("Saved match: User1 ID = " + newMatch.getUser1().getId() + ", User2 ID = " + newMatch.getUser2().getId());
+		 System.out.println("Saved match: User1 ID = " + newMatch.getUser1().getId() + ", "
+		 		+ "User2 ID = " + newMatch.getUser2().getId());
 		return newMatch;
 	}
 	
@@ -69,7 +71,7 @@ public class MatchServiceImpl implements MatchService{
 		TypedQuery<Match> query = entityManager.createQuery(
 				
 		 "SELECT new com.application.entity.Match(m.id, m.user1, m.user2, m.matchDate, m.status) " +
-				  "FROM Match m WHERE m.user1 = :user1", Match.class);
+				  "FROM Match m WHERE m.user1 = :user1 ", Match.class);
 		
 		 // Create a reference to the User entity
 	    User userReference = entityManager.getReference(User.class, theId);
@@ -80,11 +82,31 @@ public class MatchServiceImpl implements MatchService{
 		List<Match> matches = query.getResultList();
 		return matches;
 	}
+	
+	
+	@Override
+	public List<Match> findMatchByStatus(String status) {
+		//create query
+		TypedQuery<Match> query = entityManager.createQuery(
+				
+		 "SELECT new com.application.entity.Match(m.id, m.user1, m.user2, m.matchDate, m.status) " +
+				  "FROM Match m WHERE m.status = :status", Match.class);
+		
+//		 // Create a reference to the User entity
+//	    Match userReference = entityManager.getReference(Match.class, status);
+		
+		query.setParameter("status", status);
+		
+		//execute query
+		List<Match> matches = query.getResultList();
+		return matches;
+	}
 
 	@Override
 	public List<String> getAllMatches() {	
 		TypedQuery<String> query = entityManager.createQuery(				
-				 "SELECT CONCAT(' id: ', m.id,' user1: ', m.user1, ' user2: ', m.user2,' date: ', m.matchDate, ' status: ', m.status) " +
+				 "SELECT CONCAT(' id: ', m.id,' user1: ', m.user1, ' user2: ', m.user2,' date: ', "
+				 + "m.matchDate, ' status: ', m.status) " +
 					        "FROM Match m", String.class);
 		
 		return query.getResultList();
@@ -115,29 +137,28 @@ public class MatchServiceImpl implements MatchService{
 	}
 
 	@Override
-	public List<Match> findByStatus(String status) {		
-		return matchRepository.findByStatus(status);
+	public List<Match> findMatchByUserIdAndStatus(int userId, String status) {
+		User user1 = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User1 not found"));
+		
+		User user2 = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User2 not found"));
+		
+		return matchRepository.findByUser1OrUser2AndStatus(user1, user2, status);
 	}
 
-
+	@Override
+	public Match updateMatchStatus(int matchId, String newStatus) {
+		Match match = matchRepository.findById(matchId)
+	            .orElseThrow(() -> new RuntimeException("Match not found with id: " + matchId));        
+	       
+	        
+	        match.setStatus(newStatus);
+	        return matchRepository.save(match);
+    }
 	
 	
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-
-
-
-
 }
+
+
+

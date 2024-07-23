@@ -68,13 +68,17 @@ public class User {
 	private Set<Match> matchesAsUser2;
 	
 	
-	@OneToMany(mappedBy = "sender", cascade = {CascadeType.REFRESH, CascadeType.DETACH,
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sender", cascade = {CascadeType.REFRESH, CascadeType.DETACH,
 			CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
 	private Set<Message> sentMessages;
 
-	@OneToMany(mappedBy = "receiver", cascade = {CascadeType.REFRESH, CascadeType.DETACH,
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "receiver", cascade = {CascadeType.REFRESH, CascadeType.DETACH,
 			CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
 	private Set<Message> receivedMessages;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "createdAt", cascade = {CascadeType.DETACH, CascadeType.REFRESH,
+			CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+	private Set<Feedback> userFeedback;
 	
 	public User() {
 		

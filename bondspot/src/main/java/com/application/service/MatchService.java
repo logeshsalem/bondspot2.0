@@ -8,9 +8,7 @@ public interface MatchService {
 	
 	List<String> getAllMatches();
 	
-	Match getMatchById(int id);	
-	
-	List<Match> findByStatus(String status);
+	Match getMatchById(int id);		
 	
 	void delete(int id);
 	
@@ -18,8 +16,13 @@ public interface MatchService {
 	
 	List<Match> findMatchByUserId(int userId);
 
+	List<Match> findMatchByStatus(String status);
 	
+	List<Match> findMatchByUserIdAndStatus(int userId, String status);
 
+	Match updateMatchStatus(int matchId, String newStatus);
+	
+	
 	
 
 }
