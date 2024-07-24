@@ -1,0 +1,109 @@
+DROP SCHEMA IF EXISTS `bondspot`;
+
+CREATE SCHEMA `bondspot`;
+
+use `bondspot`;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE `profile` (
+`id` int NOT NULL AUTO_INCREMENT,
+bio TEXT,
+occupation VARCHAR(255),
+education VARCHAR(255),
+religion VARCHAR(255),
+mother_tongue VARCHAR(255),
+marital_status VARCHAR(255),
+height DOUBLE,
+weight DOUBLE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `users` (
+`id` int NOT NULL AUTO_INCREMENT,
+`username` varchar(50) NOT NULL UNIQUE,
+`password` char(68) NOT NULL,
+`active` tinyint default 1,
+`first_name` varchar(55) NOT NULL,
+`last_name` varchar(55) NOT NULL,
+`dob` date NOT NULL,
+`gender` varchar(10) NOT NULL,
+`phone_number` varchar(15) NOT NULL,
+`address` text NOT NULL,
+`registration_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+`profile_id` int DEFAULT NULL,
+PRIMARY KEY (`id`),
+KEY `FK_DETAIL_idx` (`profile_id`),
+CONSTRAINT `FK_DETAIL` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `users_roles` (
+  `user_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  
+  PRIMARY KEY (`user_id`,`role_id`),
+  
+  KEY `FK_ROLE_idx` (`role_id`),
+  
+  CONSTRAINT `FK_USER_05` FOREIGN KEY (`user_id`) 
+  REFERENCES `users` (`id`) 
+  ON DELETE NO ACTION ON UPDATE NO ACTION,
+  
+  CONSTRAINT `FK_ROLE` FOREIGN KEY (`role_id`) 
+  REFERENCES `role` (`id`) 
+  ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `matches` (
+`id` int NOT NULL AUTO_INCREMENT,
+`user_id_1` int DEFAULT NULL,
+`user_id_2` int DEFAULT NULL,
+`match_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+`status` varchar(15) NOT NULL,
+primary key (`id`),
+key `fk_detail_1` (`user_id_1`),
+key `fk_detail_2` (`user_id_2`),
+constraint `fk_detail_user_1` FOREIGN KEY (user_id_1) REFERENCES users(id),
+constraint `fk_detail_user_2` FOREIGN KEY (user_id_2) REFERENCES users(id)
+
+ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `messages` (
+`id` int NOT NULL AUTO_INCREMENT,
+`sender_id` int  not NULL,
+`receiver_id` int not NULL,
+`message` text NOT NULL,
+`sent_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+primary key (`id`),
+key `fk_message_1` (`sender_id`),
+key `fk_message_2` (`receiver_id`),
+constraint `fk_message_sender` FOREIGN KEY (sender_id) REFERENCES users(id),
+constraint `fk_message_receiver` FOREIGN KEY (receiver_id) REFERENCES users(id)
+
+ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `feedbacks` (
+`id` int NOT NULL AUTO_INCREMENT,
+`users` int  not NULL,
+`feedback` text not NULL,
+`rating` double NOT NULL,
+`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+primary key (`id`),
+key `fk_feedback` (`users`),
+constraint `fk_feedback` FOREIGN KEY (users) REFERENCES users(id)
+
+ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+SET FOREIGN_KEY_CHECKS = 1;
