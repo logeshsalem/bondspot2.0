@@ -3,6 +3,8 @@ package com.application.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,15 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.application.entity.User;
 import com.application.service.UserService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class UserController {
 	
-	private UserService userService;
+	private final UserService userService;
+	private final PasswordEncoder passwordEncoder;
 	
-	public UserController(UserService theUserService) {
-		userService = theUserService;
-	}
+//	public UserController(UserService theUserService) {
+//		userService = theUserService;
+//	}
 	
 	
 	@GetMapping("/user")
@@ -36,8 +42,15 @@ public class UserController {
 	
 	
 	@PostMapping("/user")
-	public User createUser(@RequestBody User user) {
-		return userService.save(user);
+	public String createUser(@RequestBody User user) {
+		String hashpwd = passwordEncoder.encode(user.getPasswords());
+		user.setPasswords(hashpwd);
+		User savedUser = userService.save(user);
+		if(savedUser.getId()>0) {
+			return "user saved successfully";
+		}else {
+			return "Failed to save user";
+		}
 	}
 	
 	@GetMapping("/user/{userId}")
